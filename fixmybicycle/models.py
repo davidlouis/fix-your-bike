@@ -15,11 +15,12 @@ class Cyclist(models.Model):
 class Bicycle(models.Model):
     # each cyclist/athlete can have more than one bicycle!
     cyclist = models.ForeignKey(Cyclist)
-    make = models.CharField(max_length=300)
-    model = models.CharField(max_length=300)
+    name = models.CharField(max_length=300, verbose_name='Bicycle Name')
+    make = models.CharField(max_length=300, verbose_name='Make')
+    model = models.CharField(max_length=300, verbose_name='Model')
 
     def __str__(self):
-        return self.cyclist.first_name + ' ' + self.cyclist.last_name + ' (' + self.make + ' ' + self.model + ')'
+        return self.cyclist.first_name + ' ' + self.cyclist.last_name + ' (' +self.name + ')'
 
 class MaintenanceTask(models.Model):
     # This model defines the nature of a maintenance task you want to perform
@@ -63,8 +64,8 @@ class Activity(models.Model):
 class Maintenance(models.Model):
     # Model to store information of a maintenance task being completed at a certain time
     # this will keep a record of the maintenance done on the bicycle
-    time_of_maintenance = models.DateTimeField()
-    task_performed = models.ForeignKey(MaintenanceTask)
+    time_of_maintenance = models.DateTimeField(verbose_name='Date and Time when maintenance task is performed')
+    task_performed = models.ForeignKey(MaintenanceTask, verbose_name='The task performed')
 
     def __str__(self):
-        return 'Maintenance task: ' + self.task_performed.name + ' at ' + format(self.time_of_maintenance)
+        return 'Maintenance task: ' + self.task_performed.name + ' at ' + self.time_of_maintenance.__str__()

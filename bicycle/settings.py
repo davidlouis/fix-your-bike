@@ -51,6 +51,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.security.SecurityMiddleware',
 )
 
+
 ROOT_URLCONF = 'bicycle.urls'
 
 TEMPLATES = [
@@ -68,6 +69,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'bicycle.wsgi.application'
 
@@ -101,3 +103,20 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT= '/Django/bicycle/staticroot/'
+
+#userera stuff - not using
+#EMAIL_USE_TLS = True
+#EMAIL_HOST = 'smtp.gmail.com'
+#EMAIL_PORT = 587
+#EMAIL_HOST_USER = 'yourgmailaccount@gmail.com'
+#EMAIL_HOST_PASSWORD = 'yourgmailpassword'
+
+ANONYMOUS_USER_ID = -1
+
+#AUTH_PROFILE_MODULE = 'fixmybicycle.Cyclist'
+
+
+#USERENA_SIGNIN_REDIRECT_URL = '/%(username)s/'
+#LOGIN_URL = '/accounts/login/'
+#LOGOUT_URL = '/signout/'
