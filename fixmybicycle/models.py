@@ -1,26 +1,30 @@
 from django.db import models
-from django.contrib.auth.models import User
 
-
-# Create your models here.
-
-# Used to define the site user/athlete
 class Cyclist(models.Model):
+    # Model used to define the site user/athlete
+    user = models.OneToOneField('auth.User', related_name='cyclist_profile')
     first_name = models.CharField(max_length=300)
     last_name = models.CharField(max_length=300)
-    date_created = models.DateTimeField('date created')
+    date_created = models.DateTimeField('date published')
+
+    def __str__(self):
+        return self.first_name + ' ' + self.last_name
+
     # no doubt need more stuff including login user
 
-# each cyclist/athlete can have more than one bicycle!
 class Bicycle(models.Model):
+    # each cyclist/athlete can have more than one bicycle!
     cyclist = models.ForeignKey(Cyclist)
     make = models.CharField(max_length=300)
     model = models.CharField(max_length=300)
 
-# This model defines the nature of a maintenance task you want to perform
-# eg. On my Trek road bike I may want to change my chain every 3000km
-# eg. On my Mountain bike I may want to check the headstem every 6 months
+    def __str__(self):
+        return self.cyclist.first_name + ' ' + self.cyclist.last_name + ' (' + self.make + ' ' + self.model + ')'
+
 class MaintenanceTask(models.Model):
+    # This model defines the nature of a maintenance task you want to perform
+    # eg. On my Trek road bike I may want to change my chain every 3000km
+    # eg. On my Mountain bike I may want to check the headstem every 6 months
 
     DISTANCE = 1 # Every X km/m
     RIDING_TIME = 2 # Every x hours riding the bike
@@ -34,27 +38,33 @@ class MaintenanceTask(models.Model):
 
     bicycle = models.ForeignKey(Bicycle)
     name = models.CharField(max_length=100) #Name of maintenance task. eg Replace Chain
-    description = models.CharField(max_length=500) #Additional descriptive information on nature of task
+    description = models.TextField(verbose_name='Addition description of task to be performed') #Additional descriptive information on nature of task
     interval = models.DecimalField(decimal_places=2, max_digits=10)
     interval_type = models.IntegerField(choices=interval_type_choices, default=DISTANCE)
 
+    def __str__(self):
+        return self.name
 
-# Model to store activity/ride information.
-# Will be imported from Strava etc. This information is used to calculate
-# WHEN each maintenance tasks is next needing to be done
 class Activity(models.Model):
+    # Model to store activity/ride information.
+    # Will be imported from Strava etc. This information is used to calculate
+    # WHEN each maintenance tasks is next needing to be done
+    name = models.CharField(max_length=100,verbose_name='Activity Name')
     cyclist = models.ForeignKey(Cyclist)
     bicycle = models.ForeignKey(Bicycle)
-    start_time = models.DateTimeField('Date and Time of Activity start')
-    end_time = models.DateTimeField('Date and Time of Activity end')
-    distance = models.FloatField('Total distance of activity')
-    moving_duration = models.IntegerField('Total moving time of activity in seconds')
+    start_time = models.DateTimeField(verbose_name='Date and Time of Activity start')
+    end_time = models.DateTimeField(verbose_name='Date and Time of Activity end')
+    distance = models.FloatField(verbose_name='Total distance of activity')
+    moving_duration = models.IntegerField(verbose_name='Total moving time of activity in seconds')
 
-# Model to store information of a maintenance task being completed at a certain time
-# this will keep a record of the maintenance done on the bicycle
+    def __str__(self):
+        return self.name
+
 class Maintenance(models.Model):
+    # Model to store information of a maintenance task being completed at a certain time
+    # this will keep a record of the maintenance done on the bicycle
     time_of_maintenance = models.DateTimeField()
     task_performed = models.ForeignKey(MaintenanceTask)
 
-
-
+    def __str__(self):
+        return 'Maintenance task: ' + self.task_performed.name + ' at ' + format(self.time_of_maintenance)
